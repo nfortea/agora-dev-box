@@ -19,30 +19,30 @@
   register: Makefile
 
 - name: EOrchestra, vfork clean
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   shell: make clean
          chdir=/home/eorchestra/vfork
   when: Makefile.stat.exists == True
 
 # TODO: we need a real fix for this, in the future when we have more time...
 - name: EOrchestra, vfork fix
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   file: path=/home/eorchestra/vfork/{{ item }} state=absent
   with_items:
     - vfork/classes/vfork/protocol/Protocol.class
     - vfork/classes/vfork/protocol/mixnet/MixNetElGamalInterfaceJSON.class
 
 - name: EOrchestra, vfork configure
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   shell: ./configure --enable-jgmpmee --enable-jecn
          chdir=/home/eorchestra/vfork
 
 - name: EOrchestra, vfork make
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   shell: export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8; make
          chdir=/home/eorchestra/vfork
 
@@ -50,12 +50,12 @@
 # http://stackoverflow.com/questions/361975/setting-the-default-java-character-encoding/623036#623036
 # alternatively modify the makefile.am and makefile.in files
 - name: EOrchestra, vfork make install
-  became: true
+  sudo: true
   shell: export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8; make install
          chdir=/home/eorchestra/vfork
 
 - name: EOrchestra, vfork max heap size configuration
-  became: true
+  sudo: true
   lineinfile:
     dest='{{item}}'
     backrefs=yes
@@ -69,17 +69,17 @@
     - /usr/local/bin/vmnv
 
 - name: EOrchestra, vfork copy .vfork_env
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   shell: cp .vfork_env /home/eorchestra
          chdir=/home/eorchestra/vfork
 
 - name: EOrchestra, vfork bashrc line
-  became: true
+  sudo: true
   lineinfile: dest=/home/eorchestra/.bashrc line="source /home/eorchestra/.vfork_env" state=present
 
 - name: EOrchestra, vfork init random device
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   shell: bash -l -c "source /home/eorchestra/.vfork_env && vog -rndinit RandomDevice /dev/urandom"
          chdir=/home/eorchestra/vfork

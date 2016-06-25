@@ -15,15 +15,15 @@
 
 ---
 - name: Sentry, Adding redis-server ppa
-  became: true
+  sudo: true
   shell: apt-add-repository ppa:chris-lea/redis-server -y
 
 - name: Sentry, apt-cache update
-  became: true
+  sudo: true
   action: apt update_cache=yes
 
 - name: Sentry, Installing packages
-  became: true
+  sudo: true
   action: apt pkg={{item}} state=latest
   with_items:
     - python-setuptools

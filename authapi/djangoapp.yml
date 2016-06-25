@@ -15,8 +15,8 @@
 
 ---
 - name: AuthApi, Ensure using https in git clone
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   shell: 'git config --global url."https://".insteadOf git://'
   # this is neede because otherwise when installing packages with pip
   # requirements from a git repository, it won't use the http_proxy if
@@ -25,16 +25,16 @@
   # http://jgoodall.me/posts/2013/05/29/git-use-https/
 
 - name: AuthApi, Installing python pacakges
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   pip:
     virtualenv=/home/authapi/env
     requirements=/home/authapi/authapi/requirements.txt
     state=present
 
 - name: AuthApi, Migrate
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   django_manage: command=migrate
   args:
     app_path: /home/authapi/authapi/authapi
@@ -42,8 +42,8 @@
     settings: "authapi.deploy"
 
 - name: AuthApi, Collect static
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   django_manage: command=collectstatic
   args:
     app_path: /home/authapi/authapi/authapi

@@ -15,5 +15,5 @@
 
 ---
 - name: EOrchestra, Creating eorchestra user
-  became: true
+  sudo: true
   user: name=eorchestra shell=/bin/bash home=/home/eorchestra

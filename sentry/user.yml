@@ -15,5 +15,5 @@
 
 ---
 - name: Sentry, Creating default user
-  became: true
+  sudo: true
   user: name=sentry shell=/bin/bash

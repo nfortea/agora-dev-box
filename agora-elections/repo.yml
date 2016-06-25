@@ -15,7 +15,7 @@
 
 ---
 - name: AgoraElections, Git clone
-  became: true
-  became_user: agoraelections
+  sudo: true
+  sudo_user: agoraelections
   git: repo={{ repos.aelections.repo }} version={{ repos.aelections.version }}
        dest=/home/agoraelections/agora-elections force={{ repos.aelections.force }}

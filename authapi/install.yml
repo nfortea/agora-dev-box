@@ -17,15 +17,15 @@
 - include: repo.yml
 
 - name: AuthApi, Creating deploy settings
-  became: true
+  sudo: true
   template: src=authapi/templates/deploy.py dest=/home/authapi/authapi/authapi/authapi/ owner=authapi mode=0644
 
 - name: AuthApi, Creating uwsgi settings
-  became: true
+  sudo: true
   template: src=authapi/templates/uwsgi.ini dest=/home/authapi/uwsgi.ini owner=authapi mode=0644
 
 - name: AuthApi, creating some shell commands
-  became: true
+  sudo: true
   template:
     src="authapi/templates/{{item.name}}"
     dest="/home/authapi/{{item.name}}"
@@ -41,18 +41,18 @@
       perm: "0644"
 
 - name: AuthApi, Creates webstatic directory
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   file: path=/home/authapi/webstatic state=directory
 
 - name: AuthApi, Creating the virtualenv
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   shell: '[ -d "/home/authapi/env" ] || virtualenv -p /usr/bin/python3 /home/authapi/env'
 
 - name: AuthApi, Installing python uwsgi, psycopg2
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   pip:
     name={{item}}
     virtualenv=/home/authapi/env
@@ -64,8 +64,8 @@
 - include: djangoapp.yml
 
 - name: AuthApi, Load fixture (admin user)
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   django_manage:
     command=loaddata
     fixtures=/home/authapi/fixture.json
@@ -75,12 +75,12 @@
     settings: "authapi.deploy"
 
 - name: AuthApi, set password
-  became: true
-  became_user: authapi
+  sudo: true
+  sudo_user: authapi
   shell: /home/authapi/changepassword.sh admin "{{config.authapi.admin_user.password}}"
 
 - name: Authapi, set authapi election start id
-  became: true
-  became_user: postgres
+  sudo: true
+  sudo_user: postgres
   when: config.load_balancing.is_master
   shell: psql authapi -tAc "select setval('api_authevent_id_seq', GREATEST((SELECT MAX(id)+1 FROM api_authevent),{{config.authapi.election_start_id}}));"

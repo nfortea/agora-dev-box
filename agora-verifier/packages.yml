@@ -29,16 +29,16 @@
   when: sbt_check_deb.rc == 1
 
 - name: AgoraVerifier, Install sbt-0.13.7.deb
-  became: true
+  sudo: true
   apt: deb="/tmp/sbt-0.13.7.deb" state=present
   when: sbt_check_deb.rc == 1
 
 - name: AgoraVerifier, Updating packages
-  became: true
+  sudo: true
   action: apt update_cache=yes
 
 - name: AgoraVerifier, Installing packages
-  became: true
+  sudo: true
   action: apt pkg={{item}} state=installed
   with_items:
     - sharutils

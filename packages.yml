@@ -15,11 +15,11 @@
 
 ---
 - name: Packages, Updating packages
-  became: true
+  sudo: true
   action: apt update_cache=yes
 
 - name: Packages, Installing packages
-  became: true
+  sudo: true
   action: apt pkg={{item}} state=installed force=yes
   with_items:
     - git
@@ -47,7 +47,7 @@
     - m4
 
 - name: Packages, Download some python packages from ubuntu vivid release (needed for http_proxy)
-  became: true
+  sudo: true
   get_url:
     url={{item.url}}
     sha256sum={{item.sha256sum}}
@@ -83,7 +83,7 @@
       sha256sum: 1784c739a8f59c70faf2759bb27e96fe7dc231f8f98f9351fb64fc613927a260
 
 - name: Packages, Install downloaded python packages
-  became: true
+  sudo: true
   shell: dpkg --skip-same-version -i /tmp/{{item}}
   with_items:
     - python3-pip_1.5.6-5ubuntu2_all.deb
@@ -95,15 +95,15 @@
     - virtualenv_1.11.6+ds-1_all.deb
 
 - name: Packages, Generate UTF-8 locales
-  became: true
+  sudo: true
   shell: locale-gen en_US en_US.UTF-8 es_ES es_ES.UTF-8
 
 - name: Packages, Configure locales
-  became: true
+  sudo: true
   shell: dpkg-reconfigure locales
 
 - name: Packages, Create postgresql cluster
-  became: true
+  sudo: true
   shell: pg_createcluster --start -e UTF-8 --locale=UTF-8 --lc-collate=UTF-8 --lc-ctype=UTF-8 9.3 main
   register: cmdoutput
   failed_when: "'Error: cluster configuration already exists' not in cmdoutput.stderr and cmdoutput.rc != 0"

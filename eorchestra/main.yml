@@ -21,15 +21,15 @@
 - include: vfork.yml
 
 - name: EOrchestra, installing extra pip packages
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   pip: name={{item}} virtualenv=/home/eorchestra/venv state=present
   with_items:
     - uwsgi
     - setuptools
 
 - name: EOrchestra, configure settings
-  became: true
+  sudo: true
   template: src=eorchestra/templates/base_settings.py
             dest=/home/eorchestra/election-orchestra/base_settings.py
             owner=eorchestra mode=0755
@@ -37,14 +37,14 @@
 - include: app.yml
 
 - name: EOrchestra, createdb
-  became: true
-  became_user: eorchestra
+  sudo: true
+  sudo_user: eorchestra
   shell: export FRESTQ_SETTINGS=base_settings.py; /home/eorchestra/venv/bin/python app.py --createdb
          chdir=/home/eorchestra/election-orchestra
 
 # post inst files
 - name: EOrchestra, postinst files
-  became: true
+  sudo: true
   template: src=eorchestra/templates/{{item.f}} dest={{ item.dest }} owner={{ item.owner }} mode={{ item.mode }}
   with_items:
     - { f: auth.ini, dest: /home/eorchestra/election-orchestra/auth.ini, owner: "eorchestra", mode: "0644" }
@@ -53,13 +53,13 @@
     - { f: election-orchestra.conf, dest: /etc/supervisor/conf.d/election-orchestra.conf, owner: "root", mode: "0644" }
 
 - name: EOrchestra, directories creation
-  became: true
+  sudo: true
   file: path={{ item }} recurse=yes state=directory owner=eorchestra group=users
   with_items:
     - /srv/election-orchestra/server1/public/
 
 - name: EOrchestra, restarting supervisor
-  became: true
+  sudo: true
   service: name={{ item.name }} state=restarted sleep={{ item.sleep }}
   with_items:
     - { name: supervisor, sleep: "{{ params.sleep.slow }}" }

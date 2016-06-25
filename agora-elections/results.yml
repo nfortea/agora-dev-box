@@ -15,26 +15,26 @@
 
 ---
 - name: AgoraResults, Git clone
-  became: true
-  became_user: agoraelections
+  sudo: true
+  sudo_user: agoraelections
   git: repo={{ repos.results.repo }} version={{ repos.results.version }}
        dest=/home/agoraelections/agora-results force={{ repos.results.force }}
 
 - name: AgoraResults, req.txt
-  became: true
+  sudo: true
   template: src=agora-elections/templates/results.req.txt
             dest=/home/agoraelections/agora-results/results.req.txt
             owner="agoraelections" mode=0655
 
 - name: AgoraResults, virtualenv
-  became: true
-  became_user: agoraelections
+  sudo: true
+  sudo_user: agoraelections
   pip: virtualenv=/home/agoraelections/renv
        virtualenv_command="/usr/bin/virtualenv -p /usr/bin/python3"
        requirements=/home/agoraelections/agora-results/results.req.txt
 
 - name: AgoraResults, results.sh
-  became: true
+  sudo: true
   template: src=agora-elections/templates/results.sh
             dest=/home/agoraelections/agora-elections/admin/results.sh
             owner="agoraelections" mode=0755
