@@ -15,7 +15,7 @@
 
 ---
 - name: AgoraVerifier, Reinstalling java 8
-  sudo: true
+  became: true
   action: apt pkg={{item}} state=installed
   with_items:
     - oracle-java8-set-default

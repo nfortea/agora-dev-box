@@ -18,7 +18,7 @@
 - include: djangoapp.yml
 
 - name: AuthApi, Restarting service
-  sudo: true
+  became: true
   supervisorctl: name={{ item }} state=restarted
   with_items:
     - authapi
